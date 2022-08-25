@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+
+
+
+        <div class="genrate-form">
+            <label for="laguages">Input Languags Locale</label>
+            <input type="text" id="languages" height="100px" name="" placeholder="Locale"
+                value="en, de, es, it, fr, pt, ru, nl, el, pl, ro, fi, sv, da, no, zh, ja, ko, vi, id, th, tr"> <br><br>
+
+            <label for="tutorial_text">Input Sub Url Text (tutorials)</label>
+            <input type="text" id="tutorial_text" name=""
+                value="tutorials, tutorials , tutoriales, tutorial, tutoriels, tutoriais, tutorials, tutorials, tutorials, tutoriale, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials, tutorials"
+                height="100px" placeholder="Tutorial"> <br><br>
+
+            <label for="slugs"> Input Languags slugs</label>
+            <input type="text" id="slugs" name=""
+                value="javascript,html,css,python,sql,java,node-js,c-sharp,typescript,bash-shell,cpp,php,powershell,c,go,kotlin,rust,ruby,dart,assembly,swift,r,vba,matlab,groovy,objective-c,scala,perl,haskell,delphi,clojure,elixir,lisp,julia,f-sharp,erlang,apl,crystal,cobol,react-js,jquery,express,angular,vue-js,asp-net-core,flask,asp-net,django,spring,angular-js,laravel,ruby-on-rails,gatsby,fastapi,symfony,svelte,drupal,git,docker,kubernetes,yarn,unity-3d,ansible,terraform,xamarin,unreal-engine,puppet,dena,chef,flow,pulumi,visual-studio-code,visual-studio,notepad-plus-plus,intellij,vim,android-studio,sublime-text,pycharm,eclipse,atom,ipython,jupyter,xcode,webstorm,phpstorm,netbeans,emacs,neovim,rider,rstudio,rubymine,textmate,Tutorials,mysql,postgresql,sqlite,mongodb,microsoft-sql-server,redis,mariadb,firebase,elasticsearch,oracle-database,dynamodb,apache-cassandra,ibm-db2,couchbase,aws,google-cloud-platform,microsoft-azure,digitalocean,heroku,ibm-cloud-or-watson,oracle-cloud-infrastructure">
+
+            <button id="buttonGen">Generate Routes</button>
+
+            <div id="routesCode">
+                <pre> </pre>
+            </div>
+
+        </div>
+
+        <script>
+            function copyDivToClipboard() {
+                str = document.querySelector('#routesCode pre').innerHTML;
+                const el = document.createElement('textarea');
+                el.value = str;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert('Copied the text:' + el.value);
+            };
+
+
+            function autogenRoute(language, tutorial_text, tutorial_name_slug) {
+
+                let routesText = '';
+
+                for (let j = 0; j < language.length; j++) {
+                    console.log(language[j]);
+                    for (let i = 0; i < tutorial_name_slug.length; i++) {
+                        if (language[j] !== 'en') {
+                            routesText = routesText + `
+                        /${language[j]}/${tutorial_text[j]}/${tutorial_name_slug[i]}/:
+                            permalink: /${language[j]}/${tutorial_text[j]}/${tutorial_name_slug[i]}/{slug}/
+                            template: index-tutorial
+                            filter: "tag:hash-tutorial-${language[j]}+tag:hash-${tutorial_name_slug[i]}"`;
+                        }
+                        else {
+                            routesText = routesText + `
+                        /${tutorial_text[j]}/${tutorial_name_slug[i]}/:
+                            permalink: /${language[j]}/${tutorial_text[j]}/${tutorial_name_slug[i]}/{slug}/
+                            template: index-tutorial
+                            filter: "tag:hash-tutorial-${language[j]}+tag:hash-${tutorial_name_slug[i]}"`;
+                        }
+                    }
+                }
+
+                document.querySelector('#routesCode pre').innerHTML = routesText;
+            }
+
+            document.querySelector('#buttonGen').addEventListener('click', function (e) {
+                e.preventDefault();
+                generateRoutes();
+
+            });
+            document.querySelector('#routesCode pre').addEventListener('click', function (e) {
+                e.preventDefault();
+                copyDivToClipboard()
+
+            });
+
+            function generateRoutes() {
+                let languages = document.querySelector('#languages').value.replace(/\s/g, '');
+                let tutorial_text = document.querySelector('#tutorial_text').value.replace(/\s/g, '');
+                let slugs = document.querySelector('#slugs').value.replace(/\s/g, '');
+
+                autogenRoute(languages.split(','), tutorial_text.split(','), slugs.split(','));
+            }
+
+        </script>
+
+    </div>
+</body>
+
+</html>
